@@ -9,11 +9,14 @@ class WelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F6FA),
+ backgroundColor: const Color(0xFF4F46E5),
       appBar: AppBar(
         title: const Text('Добро пожаловать'),
         centerTitle: true,
-        automaticallyImplyLeading: false, // убираем стрелку "назад"
+        automaticallyImplyLeading: false,
+        backgroundColor: const Color(0xFF4F46E5),
+        foregroundColor: Colors.white,
+        elevation: 2,
       ),
       body: Center(
         child: Column(
@@ -22,32 +25,54 @@ class WelcomeScreen extends StatelessWidget {
             Text(
               'Привет, $email 👋',
               style: const TextStyle(
-                fontSize: 22,
+                fontSize: 24,
                 fontWeight: FontWeight.w600,
                 color: Color(0xFF1E1E2C),
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 40),
-            ElevatedButton.icon(
-              onPressed: () {
-                // Возврат на экран входа и очистка навигации
+            const SizedBox(height: 50),
+
+            // 🌈 Стильная кнопка "Выйти"
+            GestureDetector(
+              onTap: () {
                 context.go('/');
               },
-              icon: const Icon(Icons.logout_rounded),
-              label: const Text(
-                'Выйти',
-                style: TextStyle(fontSize: 16),
-              ),
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
-                backgroundColor: Colors.redAccent,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 250),
+                width: 180,
+                height: 52,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(14),
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFFEF4444), Color(0xFFFF6B6B)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.redAccent.withOpacity(0.3),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
-                elevation: 4,
-                shadowColor: Colors.redAccent.withOpacity(0.3),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(Icons.logout_rounded, color: Colors.white),
+                    SizedBox(width: 8),
+                    Text(
+                      'Выйти',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
