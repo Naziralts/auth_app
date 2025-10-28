@@ -15,8 +15,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(state.copyWith(status: AuthStatus.loading));
 
-    await Future.delayed(const Duration(seconds: 2)); // эмуляция запроса
-
+    await Future.delayed(const Duration(seconds: 1, milliseconds: 500));
     if (event.email == 'test@test.com' && event.password == 'qwerty123') {
       emit(state.copyWith(
         status: AuthStatus.success,
