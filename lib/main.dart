@@ -1,8 +1,9 @@
+import 'package:auth_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:auth_app/features/auth/presentation/screens/login_screen.dart';
 import 'package:auth_app/features/auth/presentation/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
 
 void main() {
   final router = GoRouter(
@@ -12,9 +13,8 @@ void main() {
         builder: (context, state) => const LoginScreen(),
       ),
       GoRoute(
-        path: '/welcome',
-        builder: (context, state) =>
-            WelcomeScreen(email: state.extra as String),
+        path: '/home',
+        builder: (context, state) => const WelcomeScreen(email: 'test@test.com'),
       ),
     ],
   );
@@ -28,11 +28,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      routerConfig: router,
-      title: 'Auth',
-      
+    return BlocProvider(
+      create: (_) => AuthBloc(),
+      child: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
+        routerConfig: router,
+        title: 'Auth App',
+      ),
     );
   }
 }

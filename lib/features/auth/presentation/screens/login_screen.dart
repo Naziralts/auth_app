@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -10,21 +9,38 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
+
   bool _isLoading = false;
+  String? _errorMessage;
 
-  void _login() {
+  void _login() async {
     if (_formKey.currentState!.validate()) {
-      setState(() => _isLoading = true);
+      setState(() {
+        _isLoading = true;
+        _errorMessage = null;
+      });
 
-      // Эмуляция авторизации (через 1.5 сек — успех)
-      Timer(const Duration(seconds: 2), () {
-        if (mounted) {
-          setState(() => _isLoading = false);
-          context.go('/welcome', extra: _emailController.text);
-        }
+      // имитация загрузки
+      await Future.delayed(const Duration(seconds: 1, milliseconds: 500));
+
+      final email = _emailController.text.trim();
+      final password = _passwordController.text.trim();
+
+      // проверка правильных данных
+      if (email == 'test@test.com' && password == 'qwerty123') {
+        if (!mounted) return;
+        context.go('/home');
+      } else {
+        setState(() {
+          _errorMessage = 'Неверный логин или пароль';
+        });
+      }
+
+      setState(() {
+        _isLoading = false;
       });
     }
   }
@@ -32,50 +48,39 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       backgroundColor: const Color.fromARGB(255, 157, 154, 214),
+       backgroundColor: Colors.white,
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+          padding: const EdgeInsets.all(24),
           child: Form(
             key: _formKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 const Text(
-                  'Вход в систему',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF1E1E2C),
-                  ),
+                  'Вход в аккаунт',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Введите свои данные для входа',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.black54,
-                  ),
-                ),
-                const SizedBox(height: 40),
+                const SizedBox(height: 24),
                 TextFormField(
                   controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
                   decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.email_outlined),
                     labelText: 'Email',
                     border: OutlineInputBorder(),
+                    filled: true,
+                    fillColor: Color.fromARGB(255, 255, 255, 255),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Введите email';
-                    } else if (!value.contains('@')) {
+                    }
+                    if (!value.contains('@')) {
                       return 'Некорректный email';
                     }
                     return null;
                   },
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
                 TextFormField(
                   controller: _passwordController,
                   obscureText: true,
@@ -83,6 +88,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     prefixIcon: Icon(Icons.lock_outline),
                     labelText: 'Пароль',
                     border: OutlineInputBorder(),
+                    filled: true,
+                    fillColor: Color.fromARGB(255, 255, 255, 255),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -93,26 +100,37 @@ class _LoginScreenState extends State<LoginScreen> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 28),
+                const SizedBox(height: 16),
+                if (_errorMessage != null)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Text(
+                      _errorMessage!,
+                      style: const TextStyle(color: Colors.red),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                const SizedBox(height: 16),
                 _isLoading
                     ? const CircularProgressIndicator()
                     : SizedBox(
                         width: double.infinity,
-                        height: 50,
                         child: ElevatedButton(
                           onPressed: _login,
                           style: ElevatedButton.styleFrom(
-                            shadowColor: Colors.blue,
-                            textStyle: const TextStyle(fontSize: 16),
+                            backgroundColor: Colors.blueAccent,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 50, vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                           ),
-                          child: const Text('Войти'),
+                          child: const Text(
+                            'Войти',
+                            style: TextStyle(fontSize: 18, color: Colors.white),
+                          ),
                         ),
                       ),
-                const SizedBox(height: 18),
-                TextButton(
-                  onPressed: () {},
-                  child: const Text('Зарегистрироваться'),
-                ),
               ],
             ),
           ),

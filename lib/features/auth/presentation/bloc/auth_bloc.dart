@@ -1,28 +1,36 @@
+import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
-import '../../data/auth_repository.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final AuthRepository repository;
-
-  AuthBloc({required this.repository}) : super(const AuthState()) {
+  AuthBloc() : super(const AuthState()) {
     on<LoginSubmitted>(_onLoginSubmitted);
+    on<LogoutRequested>(_onLogoutRequested);
   }
 
   Future<void> _onLoginSubmitted(
-      LoginSubmitted event, Emitter<AuthState> emit) async {
+    LoginSubmitted event,
+    Emitter<AuthState> emit,
+  ) async {
     emit(state.copyWith(status: AuthStatus.loading));
 
-    final success = await repository.login(event.email, event.password);
+    await Future.delayed(const Duration(seconds: 2)); // эмуляция запроса
 
-    if (success) {
-      emit(state.copyWith(status: AuthStatus.success));
+    if (event.email == 'test@test.com' && event.password == 'qwerty123') {
+      emit(state.copyWith(
+        status: AuthStatus.success,
+        email: event.email,
+      ));
     } else {
       emit(state.copyWith(
         status: AuthStatus.failure,
         errorMessage: 'Неверный логин или пароль',
       ));
     }
+  }
+
+  void _onLogoutRequested(LogoutRequested event, Emitter<AuthState> emit) {
+    emit(const AuthState(status: AuthStatus.initial));
   }
 }

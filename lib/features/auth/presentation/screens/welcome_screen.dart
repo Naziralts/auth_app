@@ -23,7 +23,7 @@ class WelcomeScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Привет, $email 👋',
+              'Привет, $email ',
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w600,
@@ -33,7 +33,7 @@ class WelcomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 50),
     
-            // 🌈 Стильная кнопка "Выйти"
+          
             GestureDetector(
               onTap: () {
                 context.go('/');
