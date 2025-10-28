@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
@@ -6,7 +5,6 @@ import 'auth_state.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc() : super(const AuthState()) {
     on<LoginSubmitted>(_onLoginSubmitted);
-    on<LogoutRequested>(_onLogoutRequested);
   }
 
   Future<void> _onLoginSubmitted(
@@ -15,21 +13,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(state.copyWith(status: AuthStatus.loading));
 
-    await Future.delayed(const Duration(seconds: 1, milliseconds: 500));
+    await Future.delayed(const Duration(seconds: 1));
+
     if (event.email == 'test@test.com' && event.password == 'qwerty123') {
-      emit(state.copyWith(
-        status: AuthStatus.success,
-        email: event.email,
-      ));
+      emit(state.copyWith(status: AuthStatus.success));
     } else {
       emit(state.copyWith(
         status: AuthStatus.failure,
         errorMessage: 'Неверный логин или пароль',
       ));
     }
-  }
-
-  void _onLogoutRequested(LogoutRequested event, Emitter<AuthState> emit) {
-    emit(const AuthState(status: AuthStatus.initial));
   }
 }
